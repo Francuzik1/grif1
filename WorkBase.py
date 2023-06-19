@@ -1,9 +1,11 @@
 import psycopg2
+import Orm
 from psycopg2 import OperationalError
 
 
 class WorkBase:
     single_var = None
+    connection = None
 
     def __new__(cls, *args, **kwargs):
         if cls.single_var is None:
@@ -18,9 +20,8 @@ class WorkBase:
         self.port = port
 
     def create_connection(self):
-        connection = None
         try:
-            connection = psycopg2.connect(
+            self.connection = psycopg2.connect(
                 database=self.d_name,
                 user=self.user,
                 password=self.password,
@@ -30,4 +31,10 @@ class WorkBase:
             print("Connection to PostgreSQL DB successful")
         except OperationalError as error:
             print(f"The error '{error}' occurred")
-        return connection
+        return self.connection
+
+    #def getSelect(self):
+        #return new \Orm\Select()
+
+    #def fetchAll(self, select):
+        #return self.connection.cursor.execute(select.getSelect())
